@@ -1,6 +1,6 @@
 # action.yml
 name: "cppcheck action"
-description: "read cppcheck result and post review comment to pull request"
+description: "run cppcheck and post review comment to pull request"
 inputs:
   github_token:
     description: "action github token"
@@ -11,6 +11,10 @@ inputs:
   pull_request_id:
     description: "pull request id"
     required: true
+  allow_approve:
+    description: "allow submit approve review"
+    required: true
+    default: true
 
 runs:
   using: "composite"
@@ -24,11 +28,11 @@ runs:
         sudo apt-get install -y -q cppcheck
         go env -w GO111MODULE=on
         go install github.com/myml/action-cppcheck/cmd/action-cppcheck@latest
-    - name: generate
+    - name: run
       shell: bash
-      run: cppcheck --enable=all --output-file=report.xml  --xml .
+      run: cppcheck --enable=all --output-file=report.xml --xml .
     - name: command
       shell: bash
-      run: action-cppcheck -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -f=report.xml
+      run: action-cppcheck -f=report.xml -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -approve=${{ inputs.allow_approve }}
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}

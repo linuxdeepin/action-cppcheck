@@ -44,9 +44,11 @@ func main() {
 	var file, owner, repo string
 	var pullID int
 	var appID, installationID int64
+	var approve bool
 	flag.StringVar(&repo, "repo", "peeweep-test/dde-dock", "owner and repo name")
 	flag.StringVar(&file, "f", "/dev/stdin", "cppcheck result in xml format")
 	flag.IntVar(&pullID, "pr", 8, "pull request id")
+	flag.BoolVar(&approve, "approve", true, "allow approve")
 	flag.Int64Var(&appID, "app_id", 164400, "*github app id")
 	flag.Int64Var(&installationID, "installation_id", 22221748, "*github installation id")
 	flag.Parse()
@@ -131,7 +133,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-	} else {
+	} else if approve {
 		body := Words[rand.Intn(len(Words))]
 		_, _, err := client.PullRequests.CreateReview(context.Background(), owner, repo, pullID,
 			&github.PullRequestReviewRequest{
