@@ -1,6 +1,8 @@
 # action-cppcheck
 
-run cppcheck and post review comment to pull request
+Run cppcheck and post review comment to pull request.
+
+![Screenshot](screenshot.png)
 
 ## Inputs
 
@@ -26,6 +28,10 @@ inputs:
 github action config
 
 ```yaml
+name: cppcheck
+on:
+  pull_request:
+    types: [opened, synchronize]
 jobs:
   cppchceck:
     name: cppcheck
