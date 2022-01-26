@@ -44,13 +44,15 @@ func main() {
 	var file, owner, repo string
 	var pullID int
 	var appID, installationID int64
-	flag.StringVar(&owner, "owner", "peeweep-test", "github owner")
-	flag.StringVar(&repo, "repo", "dde-dock", "github repo")
+	flag.StringVar(&repo, "repo", "peeweep-test/dde-dock", "owner and repo name")
 	flag.StringVar(&file, "f", "/dev/stdin", "cppcheck result in xml format")
 	flag.IntVar(&pullID, "pr", 8, "pull request id")
 	flag.Int64Var(&appID, "app_id", 164400, "*github app id")
 	flag.Int64Var(&installationID, "installation_id", 22221748, "*github installation id")
 	flag.Parse()
+	arr := strings.SplitN(repo, "/", 2)
+	owner = arr[0]
+	repo = arr[1]
 
 	tr := http.DefaultTransport
 	if privateKey := []byte(os.Getenv("PRIVATE_KEY")); len(privateKey) > 0 {

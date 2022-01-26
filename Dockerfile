@@ -7,4 +7,4 @@ RUN CGO_ENABLED=0 go build ./cmd/action-cppcheck
 
 FROM scratch as prod
 COPY --from=builder /go/release/action-cppcheck /
-CMD ["/action-cppcheck"]
+ENTRYPOINT ["/action-cppcheck"]
