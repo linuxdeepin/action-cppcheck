@@ -20,9 +20,9 @@ runs:
   steps:
     - uses: actions/setup-go@v2
     - name: install depend
-      run: | 
-      apt-get install -y cppcheck
-      go install github.com/myml/action-cppcheck/cmd/action-cppcheck@latest
+      run: |
+        apt-get install -y cppcheck
+        go install github.com/myml/action-cppcheck/cmd/action-cppcheck@latest
     - name: generate
       run: cppcheck --enable=all --output-file=report.xml  --xml .
     - name: command
