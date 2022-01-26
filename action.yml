@@ -16,14 +16,14 @@ inputs:
     required: true
 
 runs:
-  using: "docker"
-  image: "Dockerfile"
-  env:
-    GITHUB_TOKEN: ${{ inputs.github_token }}
-  args:
-    - "-repo"
-    - ${{ inputs.repository }}
-    - "-pr"
-    - ${{ inputs.pull_request_id }}
-    - "-f"
-    - ${{ inputs.cppcheck_file }}
+  using: "composite"
+  steps:
+    - uses: actions/setup-go@v2
+    - name: install depend
+      run: | 
+      apt-get install -y cppcheck
+      go install github.com/myml/action-cppcheck/cmd/action-cppcheck@latest
+    - name: generate
+      run: cppcheck --enable=all --output-file=report.xml  --xml .
+    - name: command
+      run: action-cppcheck --help
