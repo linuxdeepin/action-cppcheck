@@ -15,10 +15,13 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - uses: actions/setup-go@v2
+      with:
+        go-version: ^1.17.1
     - name: install depend
       shell: bash
       run: |
-        sudo apt-get install -y -q cppcheck golang
+        sudo apt-get install -y -q cppcheck
         go env -w GO111MODULE=on
         go install github.com/myml/action-cppcheck/cmd/action-cppcheck@latest
     - name: generate
