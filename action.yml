@@ -32,4 +32,6 @@ runs:
       run: cppcheck --enable=all --output-file=report.xml  --xml .
     - name: command
       shell: bash
-      run: action-cppcheck --help
+      run: action-cppcheck -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -f=${{ inputs.pull_request_id }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
