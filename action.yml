@@ -1,5 +1,9 @@
 # action.yml
-name: "cppcheck action"
+name: "cppcheck and review"
+author: myml
+branding:
+  icon: "check"
+  color: "black"
 description: "run cppcheck and post review comment to pull request"
 inputs:
   github_token:
