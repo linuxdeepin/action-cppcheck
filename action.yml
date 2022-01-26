@@ -2,7 +2,7 @@
 name: "cppcheck action"
 description: "read cppcheck result and post review comment to pull request"
 inputs:
-  github_token: # id of input
+  github_token:
     description: "action github token"
     required: true
   repository:
@@ -10,9 +10,6 @@ inputs:
     required: true
   pull_request_id:
     description: "pull request id"
-    required: true
-  cppcheck_file:
-    description: "cppcheck_file"
     required: true
 
 runs:
