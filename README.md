@@ -1,6 +1,6 @@
 # action-cppcheck
 
-Run cppcheck and post review comment to pull request.
+Check pull request with cppcheck and post result to review comments.
 
 ![Screenshot](screenshot.png)
 

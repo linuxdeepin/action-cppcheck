@@ -4,7 +4,7 @@ author: myml
 branding:
   icon: "check"
   color: "black"
-description: "run cppcheck and post review comment to pull request"
+description: "check pull request with cppcheck and post result to review comments"
 inputs:
   github_token:
     description: "action github token"
@@ -26,15 +26,16 @@ runs:
     - uses: actions/setup-go@v2
       with:
         go-version: ^1.17.1
-    - name: install depend
+    - name: run
       shell: bash
       run: |
         sudo apt-get install -y -q cppcheck
+        cppcheck --enable=all --output-file=report.xml --xml .
+    - name: install action bin
+      shell: bash
+      run: |
         go env -w GO111MODULE=on
         go install github.com/myml/action-cppcheck/cmd/action-cppcheck@latest
-    - name: run
-      shell: bash
-      run: cppcheck --enable=all --output-file=report.xml --xml .
     - name: command
       shell: bash
       run: action-cppcheck -f=report.xml -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -approve=${{ inputs.allow_approve }}
