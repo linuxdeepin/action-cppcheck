@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/xml"
 	"flag"
 	"fmt"
 	"log"
@@ -17,30 +16,8 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-type CppCheckResults struct {
-	XMLName xml.Name       `xml:"results"`
-	Version string         `xml:"version,attr"`
-	Errors  CppCheckErrors `xml:"errors"`
-}
-type CppCheckErrors struct {
-	XMLName xml.Name        `xml:"errors"`
-	Errors  []CppCheckError `xml:"error"`
-}
-type CppCheckError struct {
-	XMLName  xml.Name          `xml:"error"`
-	ID       string            `xml:"id,attr"`
-	Severity string            `xml:"severity,attr"`
-	Message  string            `xml:"msg,attr"`
-	Verbose  string            `xml:"verbose,attr"`
-	Location *CppCheckLocation `xml:"location"`
-}
-type CppCheckLocation struct {
-	XMLName xml.Name `xml:"location"`
-	File    string   `xml:"file,attr"`
-	Line    int      `xml:"line,attr"`
-}
-
 func main() {
+	//*** init ***//
 	var file, owner, repo string
 	var pullID int
 	var appID, installationID int64
@@ -68,11 +45,13 @@ func main() {
 	}
 	client := github.NewClient(&http.Client{Transport: tr})
 
+	//*** init end ***/
+
+	//*** check ***//
 	var diffs []*diff.FileDiff
 	var checkErrs []CppCheckError
-
 	eg, ctx := errgroup.WithContext(context.Background())
-	//get pull request diff
+	// get pull request diff
 	eg.Go(func() error {
 		diffRaw, _, err := client.PullRequests.GetRaw(ctx, owner, repo, pullID, github.RawOptions{Type: github.Diff})
 		if err != nil {
@@ -123,43 +102,29 @@ func main() {
 			}
 		}
 	}
+	//*** check end ***//
+
+	//*** comment ***//
+	event := ReviewEventComment
+	var body string
 	if len(comments) > 0 {
-		_, _, err := client.PullRequests.CreateReview(context.Background(), owner, repo, pullID,
-			&github.PullRequestReviewRequest{
-				Event:    github.String("REQUEST_CHANGES"),
-				Body:     github.String("Good, but could be better"),
-				Comments: comments,
-			})
-		if err != nil {
-			log.Fatal(err)
+		body = "Good, but could be better"
+		if approve {
+			event = ReviewEventRequestChanges
 		}
-		return
+	} else {
+		body = GoodWords[rand.Intn(len(GoodWords))]
+		if approve {
+			event = ReviewEventApprove
+		}
 	}
-	event := github.String("COMMENT")
-	if approve {
-		event = github.String("APPROVE")
-	}
-	body := Words[rand.Intn(len(Words))]
 	_, _, err = client.PullRequests.CreateReview(context.Background(), owner, repo, pullID,
 		&github.PullRequestReviewRequest{
-			Event: event,
+			Event: github.String(string(event)),
 			Body:  &body,
 		})
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func decodeErrors(fname string) ([]CppCheckError, error) {
-	f, err := os.Open(fname)
-	if err != nil {
-		return nil, fmt.Errorf("open file: %w", err)
-	}
-	defer f.Close()
-	var result CppCheckResults
-	err = xml.NewDecoder(f).Decode(&result)
-	if err != nil {
-		return nil, fmt.Errorf("decode xml: %w", err)
-	}
-	return result.Errors.Errors, nil
+	//*** comment end ***//
 }

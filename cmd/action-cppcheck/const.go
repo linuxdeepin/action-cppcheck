@@ -1,7 +1,14 @@
 package main
 
-// Words 赞美
-var Words = []string{
+type ReviewEvent string
+
+var (
+	ReviewEventComment        ReviewEvent = "COMMENT"
+	ReviewEventApprove        ReviewEvent = "APPROVE"
+	ReviewEventRequestChanges ReviewEvent = "REQUEST_CHANGES"
+)
+
+var GoodWords = []string{
 	"Great!",
 	"Phenomenal!",
 	"Superb!",
