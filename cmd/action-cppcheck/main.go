@@ -47,10 +47,10 @@ func main() {
 	var approve bool
 	flag.StringVar(&repo, "repo", "peeweep-test/dde-dock", "owner and repo name")
 	flag.StringVar(&file, "f", "/dev/stdin", "cppcheck result in xml format")
-	flag.IntVar(&pullID, "pr", 8, "pull request id")
+	flag.IntVar(&pullID, "pr", 0, "pull request id")
 	flag.BoolVar(&approve, "approve", true, "allow approve")
-	flag.Int64Var(&appID, "app_id", 164400, "*github app id")
-	flag.Int64Var(&installationID, "installation_id", 22221748, "*github installation id")
+	flag.Int64Var(&appID, "app_id", 0, "*github app id")
+	flag.Int64Var(&installationID, "installation_id", 0, "*github installation id")
 	flag.Parse()
 	arr := strings.SplitN(repo, "/", 2)
 	owner = arr[0]
@@ -133,16 +133,20 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-	} else if approve {
-		body := Words[rand.Intn(len(Words))]
-		_, _, err := client.PullRequests.CreateReview(context.Background(), owner, repo, pullID,
-			&github.PullRequestReviewRequest{
-				Event: github.String("APPROVE"),
-				Body:  &body,
-			})
-		if err != nil {
-			log.Fatal(err)
-		}
+		return
+	}
+	event := github.String("COMMENT")
+	if approve {
+		event = github.String("APPROVE")
+	}
+	body := Words[rand.Intn(len(Words))]
+	_, _, err = client.PullRequests.CreateReview(context.Background(), owner, repo, pullID,
+		&github.PullRequestReviewRequest{
+			Event: event,
+			Body:  &body,
+		})
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
