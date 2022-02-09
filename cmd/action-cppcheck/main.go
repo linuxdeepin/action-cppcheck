@@ -120,8 +120,9 @@ func main() {
 	}
 	_, _, err = client.PullRequests.CreateReview(context.Background(), owner, repo, pullID,
 		&github.PullRequestReviewRequest{
-			Event: github.String(string(event)),
-			Body:  &body,
+			Event:    github.String(string(event)),
+			Body:     &body,
+			Comments: comments,
 		})
 	if err != nil {
 		log.Fatal(err)
