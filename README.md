@@ -8,9 +8,18 @@ Check pull request with cppcheck and post result to review comments.
 
 ```yaml
 inputs:
+  app_id:
+    description: "github app id"
+    required: false
+  installation_id:
+    description: "github app installation id"
+    required: false
+  private_key:
+    description: "github app private key"
+    required: false
   github_token:
     description: "action github token"
-    required: true
+    required: false
   repository:
     description: "owner and repository name"
     required: true
