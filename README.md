@@ -8,15 +8,6 @@ Check pull request with cppcheck and post result to review comments.
 
 ```yaml
 inputs:
-  app_id:
-    description: "github app id"
-    required: false
-  installation_id:
-    description: "github app installation id"
-    required: false
-  private_key:
-    description: "github app private key"
-    required: false
   github_token:
     description: "action github token"
     required: false
@@ -34,12 +25,15 @@ inputs:
 
 ## Example
 
-### Run on local repo with github token
+**use pull_request_target event**
+
+[pull_request_target vs pull_request](
+https://mirai.mamoe.net/topic/707/github-pullrequest-%E8%87%AA%E5%8A%A8%E5%AE%A1%E6%A0%B8%E5%90%88%E5%B9%B6)
 
 ```yaml
 name: cppcheck
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, synchronize]
 jobs:
   cppchceck:
@@ -47,35 +41,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
       - uses: myml/action-cppcheck@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
-          pull_request_id: ${{ github.event.number }}
-```
-
-### Run on forked repo with github app
-
-See [permissions-for-the-github_token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token)
-
-```yaml
-name: cppcheck
-on:
-  pull_request:
-    types: [opened, synchronize]
-jobs:
-  cppchceck:
-    name: cppcheck
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: myml/action-cppcheck@main
-        with:
-          app_id: xxx
-          installation_id: xxx
-          private_key: ${{ secrets.xxxx }}
-          repository: ${{ github.repository }}
-          pull_request_id: ${{ github.event.number }}
+          pull_request_id: ${{ github.event.pull_request.number }}
 ```
 
 ## Allow approval

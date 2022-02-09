@@ -6,15 +6,6 @@ branding:
   color: "black"
 description: "check pull request with cppcheck and post result to review comments"
 inputs:
-  app_id:
-    description: "github app id"
-    required: false
-  installation_id:
-    description: "github app installation id"
-    required: false
-  private_key:
-    description: "github app private key"
-    required: false
   github_token:
     description: "action github token"
     required: false
@@ -47,7 +38,6 @@ runs:
         go install github.com/myml/action-cppcheck/cmd/action-cppcheck@latest
     - name: command
       shell: bash
-      run: action-cppcheck -f=report.xml -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -approve=${{ inputs.allow_approve }} -app_id=${{ inputs.app_id }} -installation_id=${{ inputs.installation_id }}
+      run: action-cppcheck -f=report.xml -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -approve=${{ inputs.allow_approve }}
       env:
-        PRIVATE_KEY: ${{ inputs.private_key }}
         GITHUB_TOKEN: ${{ inputs.github_token }}
