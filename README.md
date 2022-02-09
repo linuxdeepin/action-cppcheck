@@ -25,7 +25,7 @@ inputs:
 
 ## Example
 
-github action config
+### Run on local repo with github token
 
 ```yaml
 name: cppcheck
@@ -41,6 +41,30 @@ jobs:
       - uses: myml/action-cppcheck@main
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          pull_request_id: ${{ github.event.number }}
+```
+
+### Run on forked repo with github app
+
+See [permissions-for-the-github_token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token)
+
+```yaml
+name: cppcheck
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  cppchceck:
+    name: cppcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: myml/action-cppcheck@main
+        with:
+          app_id: xxx
+          installation_id: xxx
+          private_key: ${{ secrets.xxxx }}
           repository: ${{ github.repository }}
           pull_request_id: ${{ github.event.number }}
 ```
