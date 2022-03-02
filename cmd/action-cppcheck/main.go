@@ -9,12 +9,17 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/bradleyfalzon/ghinstallation"
 	"github.com/google/go-github/v42/github"
 	"github.com/sourcegraph/go-diff/diff"
 	"golang.org/x/sync/errgroup"
 )
+
+func init() {
+	rand.Seed(time.Now().Unix())
+}
 
 func main() {
 	//*** init ***//
