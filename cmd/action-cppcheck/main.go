@@ -108,12 +108,12 @@ func main() {
 	event := ReviewEventComment
 	var body string
 	if len(comments) > 0 {
-		body = "Good, but could be better"
+		body = "# Cppcheck Result\n" + "Good, but could be better"
 		if approve {
 			event = ReviewEventRequestChanges
 		}
 	} else {
-		body = GoodWords[rand.Intn(len(GoodWords))]
+		body = "# Cppcheck Result\n" + GoodWords[rand.Intn(len(GoodWords))]
 		if approve {
 			event = ReviewEventApprove
 		}
