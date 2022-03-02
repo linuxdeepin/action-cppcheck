@@ -35,7 +35,7 @@ runs:
       shell: bash
       run: |
         go env -w GO111MODULE=on
-        go install github.com/myml/action-cppcheck/cmd/action-cppcheck@latest
+        go install github.com/linuxdeepin/action-cppcheck/cmd/action-cppcheck@latest
     - name: command
       shell: bash
       run: action-cppcheck -f=report.xml -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -approve=${{ inputs.allow_approve }}

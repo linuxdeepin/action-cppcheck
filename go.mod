@@ -1,4 +1,4 @@
-module github.com/myml/action-cppcheck
+module github.com/linuxdeepin/action-cppcheck
 
 go 1.17
 
