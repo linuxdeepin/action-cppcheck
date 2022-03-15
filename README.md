@@ -21,6 +21,10 @@ inputs:
     description: "allow submit approve review"
     required: true
     default: true
+  enable_checks:
+    description: "checks to enable"
+    required: true
+    default: "all"
 ```
 
 ## Example
