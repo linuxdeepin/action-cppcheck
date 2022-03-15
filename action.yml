@@ -19,6 +19,10 @@ inputs:
     description: "allow submit approve review"
     required: true
     default: true
+  enable_checks:
+    description: "checks to enable"
+    required: true
+    default: "all"
 
 runs:
   using: "composite"
@@ -30,7 +34,7 @@ runs:
       shell: bash
       run: |
         sudo apt-get install -y -q cppcheck
-        cppcheck --enable=all --output-file=report.xml --xml .
+        cppcheck --enable=${{ inputs.enable_checks }} --output-file=report.xml --xml .
     - name: install action bin
       shell: bash
       run: |
