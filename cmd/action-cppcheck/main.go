@@ -86,7 +86,7 @@ func main() {
 		filename := strings.TrimPrefix(diffs[i].NewName, "b/")
 		for j := range diffs[i].Hunks {
 			startline := int(diffs[i].Hunks[j].NewStartLine)
-			endline := startline + int(diffs[i].Hunks[j].NewLines)
+			endline := startline + int(diffs[i].Hunks[j].NewLines) - 1
 			for k := range checkErrs {
 				if checkErrs[k].Location == nil {
 					continue
