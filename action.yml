@@ -23,6 +23,10 @@ inputs:
     description: "checks to enable"
     required: true
     default: "all"
+  install_cppcheck:
+    description: "install cppcheck by apt"
+    required: false
+    default: true
 
 runs:
   using: "composite"
@@ -30,10 +34,14 @@ runs:
     - uses: actions/setup-go@v2
       with:
         go-version: ^1.17.1
-    - name: run
+    - name: install cppcheck
+      if: inputs.install_cppcheck == 'true'
       shell: bash
       run: |
         sudo apt-get install -y -q cppcheck
+    - name: run cppcheck
+      shell: bash
+      run: |
         cppcheck --enable=${{ inputs.enable_checks }} --output-file=report.xml --xml .
     - name: install action bin
       shell: bash
