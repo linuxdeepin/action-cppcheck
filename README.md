@@ -25,6 +25,10 @@ inputs:
     description: "checks to enable"
     required: true
     default: "all"
+  install_cppcheck:
+    description: "install cppcheck by apt"
+    required: false
+    default: true
 ```
 
 ## Example
