@@ -27,10 +27,12 @@ func main() {
 	var pullID int
 	var appID, installationID int64
 	var approve bool
+	var commentResult bool
 	flag.StringVar(&repo, "repo", "peeweep-test/dde-dock", "owner and repo name")
 	flag.StringVar(&file, "f", "/dev/stdin", "cppcheck result in xml format")
 	flag.IntVar(&pullID, "pr", 0, "pull request id")
 	flag.BoolVar(&approve, "approve", true, "allow approve")
+	flag.BoolVar(&commentResult, "commentResult", true, "comment result")
 	flag.Int64Var(&appID, "app_id", 0, "*github app id")
 	flag.Int64Var(&installationID, "installation_id", 0, "*github installation id")
 	flag.Parse()
@@ -113,12 +115,16 @@ func main() {
 	event := ReviewEventComment
 	var body string
 	if len(comments) > 0 {
-		body = "# Cppcheck Result\n" + "Good, but could be better"
+		if commentResult {
+			body = "# Cppcheck Result\n" + "Good, but could be better"
+		}
 		if approve {
 			event = ReviewEventRequestChanges
 		}
 	} else {
-		body = "# Cppcheck Result\n" + GoodWords[rand.Intn(len(GoodWords))]
+		if commentResult {
+			body = "# Cppcheck Result\n" + GoodWords[rand.Intn(len(GoodWords))]
+		}
 		if approve {
 			event = ReviewEventApprove
 		}

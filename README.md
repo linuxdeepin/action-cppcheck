@@ -29,6 +29,10 @@ inputs:
     description: "install cppcheck by apt"
     required: false
     default: true
+  comment_result:
+    description: "submit the result in a comment"
+    required: false
+    default: true
 ```
 
 ## Example
