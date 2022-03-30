@@ -27,6 +27,10 @@ inputs:
     description: "install cppcheck by apt"
     required: false
     default: true
+  comment_result:
+    description: "submit the result in a comment"
+    required: false
+    default: true
 
 runs:
   using: "composite"
@@ -50,6 +54,6 @@ runs:
         go install github.com/linuxdeepin/action-cppcheck/cmd/action-cppcheck@v0
     - name: command
       shell: bash
-      run: action-cppcheck -f=report.xml -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -approve=${{ inputs.allow_approve }}
+      run: action-cppcheck -f=report.xml -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -approve=${{ inputs.allow_approve }} -commentResult=${{ inputs.comment_result }}
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
