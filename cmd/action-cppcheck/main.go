@@ -129,6 +129,11 @@ func main() {
 			event = ReviewEventApprove
 		}
 	}
+
+	if len(comments) == 0 && !commentResult{
+		return
+	}
+
 	_, _, err = client.PullRequests.CreateReview(context.Background(), owner, repo, pullID,
 		&github.PullRequestReviewRequest{
 			Event:    github.String(string(event)),
