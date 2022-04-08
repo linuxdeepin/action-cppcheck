@@ -35,9 +35,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-go@v2
-      with:
-        go-version: ^1.17.1
     - name: install cppcheck
       if: inputs.install_cppcheck == 'true'
       shell: bash
@@ -47,13 +44,18 @@ runs:
       shell: bash
       run: |
         cppcheck --enable=${{ inputs.enable_checks }} --output-file=report.xml --xml .
-    - name: install action bin
+
+    - name: install golang
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^1.17.1
+    - name: install action-cppcheck
       shell: bash
       run: |
-        go env -w GO111MODULE=on GOPROXY=direct,https://proxy.golang.org
-        go install github.com/linuxdeepin/action-cppcheck/cmd/action-cppcheck@v0
+        cd $GITHUB_ACTION_PATH
+        go build ./cmd/action-cppcheck
     - name: command
       shell: bash
-      run: action-cppcheck -f=report.xml -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -approve=${{ inputs.allow_approve }} -commentResult=${{ inputs.comment_result }}
+      run: $GITHUB_ACTION_PATH/action-cppcheck -f=report.xml -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -approve=${{ inputs.allow_approve }} -commentResult=${{ inputs.comment_result }}
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
