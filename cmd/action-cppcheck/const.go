@@ -73,7 +73,6 @@ var GoodWords = []string{
 	"You're A Joy!",
 	"You're A Shining Star!",
 	"Spectacular Work!",
-	"You're #1!",
 	"You Tried Hard!",
 	"The Time You Put In Really Shows!",
 	"Remarkable!",
