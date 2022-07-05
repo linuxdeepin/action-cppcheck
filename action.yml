@@ -43,7 +43,7 @@ runs:
     - name: run cppcheck
       shell: bash
       run: |
-        cppcheck --enable=${{ inputs.enable_checks }} --output-file=report.xml --xml .
+        cppcheck --enable=${{ inputs.enable_checks }} --suppress='*:*3rdparty*' --output-file=report.xml --xml .
 
     - name: install golang
       uses: actions/setup-go@v2
