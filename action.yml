@@ -56,6 +56,6 @@ runs:
         go build ./cmd/action-cppcheck
     - name: command
       shell: bash
-      run: $GITHUB_ACTION_PATH/action-cppcheck -f=report.xml -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }} -approve=${{ inputs.allow_approve }} -commentResult=${{ inputs.comment_result }}
+      run: $GITHUB_ACTION_PATH/action-cppcheck -f=report.xml -repo=${{ inputs.repository }} -pr=${{ inputs.pull_request_id }}
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
