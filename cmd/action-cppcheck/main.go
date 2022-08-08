@@ -7,11 +7,9 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 
-	"github.com/bradleyfalzon/ghinstallation"
 	"github.com/google/go-github/v42/github"
 	"github.com/sourcegraph/go-diff/diff"
 	"golang.org/x/sync/errgroup"
@@ -25,32 +23,15 @@ func main() {
 	//*** init ***//
 	var file, owner, repo string
 	var pullID int
-	var appID, installationID int64
-	var approve bool
-	var commentResult bool
 	flag.StringVar(&repo, "repo", "peeweep-test/dde-dock", "owner and repo name")
 	flag.StringVar(&file, "f", "/dev/stdin", "cppcheck result in xml format")
 	flag.IntVar(&pullID, "pr", 0, "pull request id")
-	flag.BoolVar(&approve, "approve", true, "allow approve")
-	flag.BoolVar(&commentResult, "commentResult", true, "comment result")
-	flag.Int64Var(&appID, "app_id", 0, "*github app id")
-	flag.Int64Var(&installationID, "installation_id", 0, "*github installation id")
 	flag.Parse()
 	arr := strings.SplitN(repo, "/", 2)
 	owner = arr[0]
 	repo = arr[1]
 
-	tr := http.DefaultTransport
-	if privateKey := []byte(os.Getenv("PRIVATE_KEY")); len(privateKey) > 0 {
-		var err error
-		tr, err = ghinstallation.New(tr, appID, installationID, []byte(privateKey))
-		if err != nil {
-			log.Fatal(err)
-		}
-	} else if token := os.Getenv("GITHUB_TOKEN"); len(token) > 0 {
-		tr = NewGitHubToken(tr, token)
-	}
-	client := github.NewClient(&http.Client{Transport: tr})
+	client := github.NewClient(&http.Client{})
 
 	//*** init end ***/
 
@@ -105,43 +86,8 @@ func main() {
 					Line: &line,
 					Body: &body,
 				})
-				log.Println(filename, checkErrs[k].Location.Line, checkErrs[k].Verbose)
+				fmt.Printf("::warning file=%s,line=%d::%s\n", filename, checkErrs[k].Location.Line, checkErrs[k].Verbose)
 			}
 		}
 	}
-	//*** check end ***//
-
-	//*** comment ***//
-	event := ReviewEventComment
-	var body string
-	if len(comments) > 0 {
-		if commentResult {
-			body = "# Cppcheck Result\n" + "Good, but could be better"
-		}
-		if approve {
-			event = ReviewEventRequestChanges
-		}
-	} else {
-		if commentResult {
-			body = "# Cppcheck Result\n" + GoodWords[rand.Intn(len(GoodWords))]
-		}
-		if approve {
-			event = ReviewEventApprove
-		}
-	}
-
-	if len(comments) == 0 && !commentResult{
-		return
-	}
-
-	_, _, err = client.PullRequests.CreateReview(context.Background(), owner, repo, pullID,
-		&github.PullRequestReviewRequest{
-			Event:    github.String(string(event)),
-			Body:     &body,
-			Comments: comments,
-		})
-	if err != nil {
-		log.Fatal(err)
-	}
-	//*** comment end ***//
 }
