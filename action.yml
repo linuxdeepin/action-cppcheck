@@ -46,7 +46,7 @@ runs:
         cppcheck --enable=${{ inputs.enable_checks }} --suppress='*:*3rdparty*' --output-file=report.xml --xml .
 
     - name: install golang
-      uses: actions/setup-go@v2
+      uses: actions/setup-go@v3
       with:
         go-version: ^1.17.1
     - name: install action-cppcheck
