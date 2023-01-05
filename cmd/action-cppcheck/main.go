@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/google/go-github/v42/github"
+	"github.com/myml/ghtoken"
 	"github.com/sourcegraph/go-diff/diff"
 	"golang.org/x/sync/errgroup"
 )
@@ -31,7 +32,7 @@ func main() {
 	owner = arr[0]
 	repo = arr[1]
 
-	client := github.NewClient(&http.Client{})
+	client := github.NewClient(&http.Client{Transport: ghtoken.NewGitHubToken(http.DefaultTransport)})
 
 	//*** init end ***/
 
