@@ -31,6 +31,10 @@ inputs:
     description: "submit the result in a comment"
     required: false
     default: true
+  enable_qtcheck:
+    description: "qt code style check swith"
+    required: false
+    default: true
 
 runs:
   using: "composite"
@@ -43,7 +47,12 @@ runs:
     - name: run cppcheck
       shell: bash
       run: |
-        cppcheck --enable=${{ inputs.enable_checks }} --suppress='*:*3rdparty*' --output-file=report.xml --xml .
+        if [ ${{ inputs.enable_qtcheck }} = true ];then
+          if [ ! -e .qt.cfg ]; then wget -O .qt.cfg https://raw.githubusercontent.com/linuxdeepin/action-cppcheck/main/config/qt.cfg; fi
+          cppcheck --library=.qt.cfg --enable=${{ inputs.enable_checks }} --suppress='*:*3rdparty*' --output-file=report.xml --xml .
+        else
+          cppcheck --enable=${{ inputs.enable_checks }} --suppress='*:*3rdparty*' --output-file=report.xml --xml .
+        fi
 
     - name: install golang
       uses: actions/setup-go@v3
